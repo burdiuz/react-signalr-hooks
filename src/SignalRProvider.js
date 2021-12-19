@@ -12,7 +12,7 @@ const defaultConfiguratorFn = (
     .configureLogging(logLevel)
     .withAutomaticReconnect();
 
-const RealtimeProviderComponent = (props) => {
+const SignalRProviderComponent = (props) => {
   const [connected, setConnected] = useState(false);
   const [connection, setConnection] = useState(null);
   const {
@@ -64,8 +64,8 @@ const RealtimeProviderComponent = (props) => {
   return <Provider value={[connection, connected]}>{children}</Provider>;
 };
 
-export const RealtimeProvider = memo(
-  RealtimeProviderComponent,
+export const SignalRProvider = memo(
+  SignalRProviderComponent,
   (
     { connectionUrl, configuratorFn },
     { connectionUrl: prevConnectionUrl, configuratorFn: prevConfiguratorFn },

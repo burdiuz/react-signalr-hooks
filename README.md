@@ -1,1 +1,1 @@
-# react-signalr-hooks
+# @actualwave/use-signalr

@@ -3,19 +3,19 @@ import { HubConnectionState } from '@microsoft/signalr';
 
 import { context } from './context';
 
-export const useRealtimeConnection = () => {
+export const useSignalRConnection = () => {
   const [connection] = useContext(context) || [];
 
   return connection;
 };
 
-export const useRealtimeConnectionState = () => {
+export const useSignalRConnectionState = () => {
   const connection = useContext(context);
 
   return connection?.state || '';
 };
 
-export const useIsRealtimeConnected = () => {
+export const useIsSignalRConnected = () => {
   const [connection, connected] = useContext(context) || [];
 
   return connected && !!(connection?.state === HubConnectionState.Connected);

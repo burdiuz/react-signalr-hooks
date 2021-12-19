@@ -1,10 +1,10 @@
 import { useState, useCallback } from 'react';
 
-import { useRealtimeConnection } from './useRealtimeConnection';
+import { useSignalRConnection } from './useSignalRConnection';
 import { makeResultState, noConnectionError } from './utils';
 
-export const useLazyRealtimeInvoke = (method) => {
-  const connection = useRealtimeConnection();
+export const useLazySignalRInvoke = (method) => {
+  const connection = useSignalRConnection();
   const [result, setResult] = useState({
     loading: false,
     data: null,

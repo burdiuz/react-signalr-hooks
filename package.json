@@ -1,0 +1,31 @@
+{
+  "name": "@actualwave/use-signalr",
+  "version": "1.0.0",
+  "description": "React hooks for @microsoft/signalr library inspired by @apollo/client",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/burdiuz/react-signalr-hooks.git"
+  },
+  "keywords": [
+    "react",
+    "hook",
+    "realtime",
+    "signalr",
+    "api",
+    "communication"
+  ],
+  "author": "Oleg Galaburda",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/burdiuz/react-signalr-hooks/issues"
+  },
+  "homepage": "https://github.com/burdiuz/react-signalr-hooks#readme",
+  "peerDependencies": {
+    "prop-types": "^15.7.2",
+    "react": "^16.8.0"
+  }
+}

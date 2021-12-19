@@ -1,10 +1,10 @@
-export * from './RealtimeProvider';
-export * from './RealtimeConsumer';
-export * from './useRealtimeConnection';
-export * from './useRealtimeSubscribe';
-export * from './useLazyRealtimeInvoke';
-export * from './useRealtimeInvoke';
-export * from './useLazyRealtimeSend';
-export * from './useRealtimeSend';
+export * from './SignalRProvider';
+export * from './SignalRConsumer';
+export * from './useSignalRConnection';
+export * from './useSignalRSubscribe';
+export * from './useLazySignalRInvoke';
+export * from './useSignalRInvoke';
+export * from './useLazySignalRSend';
+export * from './useSignalRSend';
 
-export { HubConnectionState as RealtimeConnectionState } from '@microsoft/signalr';
+export { HubConnectionState as SignalRConnectionState } from '@microsoft/signalr';

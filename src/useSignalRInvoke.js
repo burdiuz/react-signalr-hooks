@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 
 import {
-  useRealtimeConnection,
-  useIsRealtimeConnected,
-} from './useRealtimeConnection';
+  useSignalRConnection,
+  useIsSignalRConnected,
+} from './useSignalRConnection';
 import { makeResultState, noConnectionError } from './utils';
 
-export const useRealtimeInvoke = (method, methodArgs = []) => {
-  const connection = useRealtimeConnection();
-  const connected = useIsRealtimeConnected();
+export const useSignalRInvoke = (method, methodArgs = []) => {
+  const connection = useSignalRConnection();
+  const connected = useIsSignalRConnected();
   const [result, setResult] = useState({
     loading: false,
     data: null,
@@ -32,7 +32,7 @@ export const useRealtimeInvoke = (method, methodArgs = []) => {
       .catch((error) => setResult(makeResultState({ error })));
 
     return promise;
-  }, [connected, connection, ...methodArgs]);
+  }, [connected, connection, method, ...methodArgs]);
 
   return result;
 };

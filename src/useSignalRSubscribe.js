@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 
-import { useRealtimeConnection } from './useRealtimeConnection';
+import { useSignalRConnection } from './useSignalRConnection';
 import { noop } from './utils';
 
-export const useRealtimeSubscribe = (method, subscribeFn) => {
-  const connection = useRealtimeConnection();
+export const useSignalRSubscribe = (method, subscribeFn) => {
+  const connection = useSignalRConnection();
   const [unsubscribeFn, setUnsubscribeFn] = useState(noop);
 
   useEffect(() => {
