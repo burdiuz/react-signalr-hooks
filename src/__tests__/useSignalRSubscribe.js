@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { cleanup, act, render } from "@testing-library/react";
 import { mockConnection } from "../useSignalRConnection";
 import { useSignalRSubscribe } from "../useSignalRSubscribe";
@@ -15,8 +15,12 @@ jest.mock("../useSignalRConnection", () => {
   };
 });
 
-const Subscribe = ({ method, fn }) => {
-  useSignalRSubscribe(method, fn);
+const Subscribe = ({ method, fn, unsubscribe }) => {
+  const unsubscribeFn = useSignalRSubscribe(method, fn);
+
+  useEffect(() => {
+    unsubscribeFn();
+  }, [unsubscribe]);
 
   return <div>My DOM.</div>;
 };
@@ -51,6 +55,17 @@ describe("useSignalRSubscribe()", () => {
 
     it("should not re-subscribe to myMethod", () => {
       expect(mockConnection.on).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("When unsubscribe called", () => {
+    beforeEach(async () => {
+      root.rerender(<Subscribe method={method} fn={fn} unsubscribe={true} />);
+    });
+
+    it("should call off() to unsubscribe from myMethod", () => {
+      expect(mockConnection.off).toHaveBeenCalledTimes(1);
+      expect(mockConnection.off).toHaveBeenCalledWith(method, fn);
     });
   });
 

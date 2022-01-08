@@ -10,11 +10,6 @@ export const useSignalRSubscribe = (method, subscribeFn) => {
   useEffect(() => {
     unsubscribeFn && unsubscribeFn();
 
-    if (!subscribeFn) {
-      setUnsubscribeFn(() => noop);
-      return;
-    }
-
     connection?.on(method, subscribeFn);
 
     setUnsubscribeFn(() => () => {
