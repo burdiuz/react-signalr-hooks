@@ -1,7 +1,11 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback } from "react";
 
-import { useSignalRConnection } from './useSignalRConnection';
-import { makeResultState, noConnectionError } from './utils';
+import { useSignalRConnection } from "./useSignalRConnection";
+import {
+  makeResultState,
+  promiseNoConnectionError,
+  getNoConnectionError,
+} from "./utils";
 
 export const useLazySignalRInvoke = (method) => {
   const connection = useSignalRConnection();
@@ -14,19 +18,21 @@ export const useLazySignalRInvoke = (method) => {
   const invokeFn = useCallback(
     (...args) => {
       if (!connection) {
-        return noConnectionError();
+        setResult(makeResultState({ error: getNoConnectionError() }));
+        return promiseNoConnectionError();
       }
 
-      setResult(makeResultState({ loading: true }));
+      // keep result and error while loading new values
+      setResult(makeResultState({ ...result, loading: true }));
       const promise = connection.invoke(method, ...args);
-      
+
       promise
         .then((data) => setResult(makeResultState({ data })))
         .catch((error) => setResult(makeResultState({ error })));
 
       return promise;
     },
-    [connection, method],
+    [connection, result, method]
   );
 
   return [invokeFn, result];

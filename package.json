@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "description": "React hooks for @microsoft/signalr library inspired by @apollo/client",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "repository": {
     "type": "git",
@@ -25,7 +27,18 @@
   },
   "homepage": "https://github.com/burdiuz/react-signalr-hooks#readme",
   "peerDependencies": {
+    "@microsoft/signalr": "^5.0.13",
     "prop-types": "^15.7.2",
     "react": "^16.8.0"
+  },
+  "devDependencies": {
+    "@babel/plugin-syntax-jsx": "^7.16.7",
+    "@babel/plugin-transform-runtime": "^7.16.7",
+    "@babel/preset-env": "^7.16.7",
+    "@babel/preset-react": "^7.16.7",
+    "@testing-library/react": "^12.1.2",
+    "@types/jest": "^27.4.0",
+    "babel-jest": "^27.4.6",
+    "jest": "^27.4.5"
   }
 }

@@ -1,7 +1,11 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState } from "react";
 
-import { useSignalRConnection } from './useSignalRConnection';
-import { makeResultState, noConnectionError } from './utils';
+import { useSignalRConnection } from "./useSignalRConnection";
+import {
+  makeResultState,
+  promiseNoConnectionError,
+  getNoConnectionError,
+} from "./utils";
 
 export const useLazySignalRSend = (method) => {
   const connection = useSignalRConnection();
@@ -14,10 +18,12 @@ export const useLazySignalRSend = (method) => {
   const sendFn = useCallback(
     (...args) => {
       if (!connection) {
-        return noConnectionError();
+        setResult(makeResultState({ error: getNoConnectionError() }));
+        return promiseNoConnectionError();
       }
 
-      setResult(makeResultState({ loading: true }));
+      // keep result and error while loading new values
+      setResult(makeResultState({ ...result, loading: true }));
       const promise = connection.send(method, ...args);
 
       promise
@@ -26,7 +32,7 @@ export const useLazySignalRSend = (method) => {
 
       return promise;
     },
-    [connection, method],
+    [connection, result, method]
   );
 
   return [sendFn, result];

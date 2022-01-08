@@ -1,7 +1,7 @@
-import { useContext } from 'react';
-import { HubConnectionState } from '@microsoft/signalr';
+import { useContext } from "react";
+import { HubConnectionState } from "@microsoft/signalr";
 
-import { context } from './context';
+import { context } from "./context";
 
 export const useSignalRConnection = () => {
   const [connection] = useContext(context) || [];
@@ -10,9 +10,9 @@ export const useSignalRConnection = () => {
 };
 
 export const useSignalRConnectionState = () => {
-  const connection = useContext(context);
+  const [connection] = useContext(context) || [];
 
-  return connection?.state || '';
+  return connection?.state || "";
 };
 
 export const useIsSignalRConnected = () => {

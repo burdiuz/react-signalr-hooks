@@ -1,11 +1,12 @@
-import React, { memo, useState, useEffect, useCallback } from 'react';
-import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
+import React, { memo, useState, useEffect, useCallback } from "react";
+import PropTypes from "prop-types";
+import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
-import { Provider } from './context';
+import { Provider } from "./context";
 
 const defaultConfiguratorFn = (
   builder,
-  { connectionUrl, logLevel = LogLevel.Warning },
+  { connectionUrl, logLevel = LogLevel.Warning }
 ) =>
   builder
     .withUrl(connectionUrl)
@@ -18,9 +19,10 @@ const SignalRProviderComponent = (props) => {
   const {
     connectionUrl,
     configuratorFn = defaultConfiguratorFn,
-    disconnectBeforeUnload,
     children,
     onClose,
+    onError,
+    onConnected,
     onReconnecting,
     onReconnected,
   } = props;
@@ -49,17 +51,26 @@ const SignalRProviderComponent = (props) => {
     if (connectionUrl) {
       newConnection = configuratorFn(new HubConnectionBuilder(), props).build();
       newConnection.onclose(handleClosed);
-      newConnection.start().then(() => setConnected(true));
+      newConnection
+        .start()
+        .then(() => {
+          if (onConnected) {
+            onConnected(newConnection);
+          }
+
+          setConnected(true);
+        })
+        .catch((error) => {
+          if (!onError) {
+            return Promise.reject(error);
+          }
+
+          onError(error);
+        });
     }
 
     setConnection(newConnection);
   }, [connectionUrl, configuratorFn]);
-
-  useEffect(() => {
-    if (!disconnectBeforeUnload) {
-      return;
-    }
-  }, [connection, disconnectBeforeUnload]);
 
   return <Provider value={[connection, connected]}>{children}</Provider>;
 };
@@ -68,9 +79,29 @@ export const SignalRProvider = memo(
   SignalRProviderComponent,
   (
     { connectionUrl, configuratorFn },
-    { connectionUrl: prevConnectionUrl, configuratorFn: prevConfiguratorFn },
+    { connectionUrl: prevConnectionUrl, configuratorFn: prevConfiguratorFn }
   ) =>
     ((!connectionUrl && !prevConnectionUrl) ||
       connectionUrl === prevConnectionUrl) &&
-    configuratorFn === prevConfiguratorFn,
+    configuratorFn === prevConfiguratorFn
 );
+
+SignalRProvider.propTypes = {
+  connectionUrl: PropTypes.string.isRequired,
+  logLevel: PropTypes.oneOf([
+    LogLevel.Critical,
+    LogLevel.Debug,
+    LogLevel.Error,
+    LogLevel.Information,
+    LogLevel.None,
+    LogLevel.Trace,
+    LogLevel.Warning,
+  ]),
+  configuratorFn: PropTypes.func,
+  children: PropTypes.node,
+  onClose: PropTypes.func,
+  onError: PropTypes.func,
+  onConnected: PropTypes.func,
+  onReconnecting: PropTypes.func,
+  onReconnected: PropTypes.func,
+};

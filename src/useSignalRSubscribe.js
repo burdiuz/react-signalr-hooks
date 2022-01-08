@@ -5,13 +5,13 @@ import { noop } from './utils';
 
 export const useSignalRSubscribe = (method, subscribeFn) => {
   const connection = useSignalRConnection();
-  const [unsubscribeFn, setUnsubscribeFn] = useState(noop);
+  const [unsubscribeFn, setUnsubscribeFn] = useState(() => noop);
 
   useEffect(() => {
     unsubscribeFn && unsubscribeFn();
-    setUnsubscribeFn(noop);
 
     if (!subscribeFn) {
+      setUnsubscribeFn(() => noop);
       return;
     }
 

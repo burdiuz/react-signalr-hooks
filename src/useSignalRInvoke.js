@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 import {
   useSignalRConnection,
   useIsSignalRConnected,
-} from './useSignalRConnection';
-import { makeResultState, noConnectionError } from './utils';
+} from "./useSignalRConnection";
+import { makeResultState, getNoConnectionError } from "./utils";
 
 export const useSignalRInvoke = (method, methodArgs = []) => {
   const connection = useSignalRConnection();
@@ -16,22 +16,22 @@ export const useSignalRInvoke = (method, methodArgs = []) => {
   });
 
   useEffect(() => {
+    if (!connection) {
+      setResult(makeResultState({ error: getNoConnectionError() }));
+      return;
+    }
+
     if (!connected) {
       return;
     }
 
-    if (!connection) {
-      return noConnectionError();
-    }
-
-    setResult(makeResultState({ loading: true }));
+    // keep result and error while loading new values
+    setResult(makeResultState({ ...result, loading: true }));
     const promise = connection.invoke(method, ...methodArgs);
 
     promise
       .then((data) => setResult(makeResultState({ data })))
       .catch((error) => setResult(makeResultState({ error })));
-
-    return promise;
   }, [connected, connection, method, ...methodArgs]);
 
   return result;

@@ -1,7 +1,9 @@
 export const noop = () => void 0;
 
-export const noConnectionError = () =>
-  Promise.reject(new Error('SignalR connection object does not exist.'));
+export const getNoConnectionError = () => new Error('SignalR connection object does not exist.');
+
+export const promiseNoConnectionError = () =>
+  Promise.reject(getNoConnectionError());
 
 export const makeResultState = ({
   loading = false,
