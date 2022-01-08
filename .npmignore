@@ -1,0 +1,6 @@
+src/
+coverage/
+.babelrc
+.gitignore
+jest.config.cjs
+rollup.config.js
