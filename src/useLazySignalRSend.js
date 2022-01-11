@@ -2,38 +2,41 @@ import { useCallback, useState } from "react";
 
 import { useSignalRConnection } from "./useSignalRConnection";
 import {
-  makeResultState,
   promiseNoConnectionError,
   getNoConnectionError,
 } from "./utils";
 
 export const useLazySignalRSend = (method) => {
   const connection = useSignalRConnection();
-  const [result, setResult] = useState({
-    loading: false,
-    data: null,
-    error: null,
-  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const sendFn = useCallback(
     (...args) => {
       if (!connection) {
-        setResult(makeResultState({ error: getNoConnectionError() }));
+        setLoading(false);
+        setError(getNoConnectionError());
         return promiseNoConnectionError();
       }
 
       // keep result and error while loading new values
-      setResult(makeResultState({ ...result, loading: true }));
+      setLoading(true);
       const promise = connection.send(method, ...args);
 
       promise
-        .then(() => setResult(makeResultState({})))
-        .catch((error) => setResult(makeResultState({ error })));
+        .then(() => {
+          setLoading(false);
+          setError(null);
+        })
+        .catch((error) => {
+          setLoading(false);
+          setError(error);
+        });
 
       return promise;
     },
-    [connection, result, method]
+    [connection, method]
   );
 
-  return [sendFn, result];
+  return [sendFn, { loading, error }];
 };

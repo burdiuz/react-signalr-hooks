@@ -1,5 +1,7 @@
 src/
 coverage/
+__mocks__/
+.github/
 .babelrc
 .gitignore
 jest.config.cjs

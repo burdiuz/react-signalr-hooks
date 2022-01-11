@@ -2,38 +2,45 @@ import { useState, useCallback } from "react";
 
 import { useSignalRConnection } from "./useSignalRConnection";
 import {
-  makeResultState,
   promiseNoConnectionError,
   getNoConnectionError,
 } from "./utils";
 
 export const useLazySignalRInvoke = (method) => {
   const connection = useSignalRConnection();
-  const [result, setResult] = useState({
-    loading: false,
-    data: null,
-    error: null,
-  });
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
 
   const invokeFn = useCallback(
     (...args) => {
       if (!connection) {
-        setResult(makeResultState({ error: getNoConnectionError() }));
+        setLoading(false);
+        setData(null);
+        setError(getNoConnectionError());
         return promiseNoConnectionError();
       }
 
       // keep result and error while loading new values
-      setResult(makeResultState({ ...result, loading: true }));
+      setLoading(true);
       const promise = connection.invoke(method, ...args);
 
       promise
-        .then((data) => setResult(makeResultState({ data })))
-        .catch((error) => setResult(makeResultState({ error })));
+        .then((data) => {
+          setLoading(false);
+          setData(data);
+          setError(null);
+        })
+        .catch((error) => {
+          setLoading(false);
+          setData(null);
+          setError(error);
+        });
 
       return promise;
     },
-    [connection, result, method]
+    [connection, method]
   );
 
-  return [invokeFn, result];
+  return [invokeFn, { loading, data, error }];
 };
